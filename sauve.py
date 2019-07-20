@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Sauve 1.2
 #Import du module os dédié à la gestion des fichiers et des dossiers
 import os
