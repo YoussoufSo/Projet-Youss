@@ -1,24 +1,29 @@
-#Sauve 1.1
+# Sauve 1.2
+#Import du module os dédié à la gestion des fichiers et des dossiers
 import os
+#Import du module filecmp dédié à la comparaison des fichiers et des dossiers
 import filecmp
+#Import du module shutil dédié à copie et à la copie et à l'archivage des fichiers et dossiers
 import shutil
-import datetime
 
-t = datetime.date.today()
+#Comparaison des deux fichiers interfaces et backup
 
-def make_archive(source, destination):
-    base = os.path.basename(destination)
-    name = base.split('.')[0]
-    format = base.split('.')[1]
-    archive_from = os.path.dirname(source)
-    archive_to = os.path.basename(source.strip(os.sep))
-    shutil.make_archive(name, format, archive_from, archive_to)
-    shutil.move('%s.%s'%(name,format), destination)
+if filecmp.cmp('/etc/network/interfaces' ,'/bac/backup'):
+    """Si le contenu des deux fichiers est le même on appele le fichier notsavemessage.py 
+    avec la commande import notsavemessage
+    qui envoi un message à un adresse pour l'informe qu'aucune sauvegarde n'a été effectue"""
+    import notsavemessage
 
-if filecmp.cmp('/etc/network/interfaces' ,'/bac/backup' ):
-    print('Fichier non modifier donc aucune sauvegarde')
-
+#Sinon si les contenus des deux fichiers sont différents
+    
 else:
-    make_archive('/bac/backup', '/bac/%s_backup.zip' % t)
+    
+    #On fait appele au fichier archiver.py pour archiver la sauvegarde presente avant d'effectuer une atre autre
+    import archiver
+    #Ensuite on remplace le fichier 'backup' par le fichier 'interfaces'
     shutil.copyfile('/etc/network/interfaces', '/bac/backup')
-    print('Fichier sauvegarder et ancienne sauvegarde archiver')
+    
+    """Et on envoi un message à une adresse pour l'informer qu'une sauvegarde 
+    vient d'être effectué en incluant le fichier savemessage.py"""
+    
+    import savemessage
